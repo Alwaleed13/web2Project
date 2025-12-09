@@ -47,14 +47,55 @@ namespace web2Project.Controllers
         // GET: UsersAccount/Login
         public IActionResult Login()
         {
-            return View();
+            if (!HttpContext.Request.Cookies.ContainsKey("Name"))
+                return View();
+            else
+            {
+                string na = HttpContext.Request.Cookies["Name"].ToString();
+                string ro = HttpContext.Request.Cookies["Role"].ToString();
+                HttpContext.Session.SetString("Name", na);
+                HttpContext.Session.SetString("Role", ro);
+
+                if (ro == "Customer")
+                    return RedirectToAction("UsersAccount", "CustomerHome");
+                else if (ro == "Admin")
+                    return RedirectToAction("UsersAccount", "AdminHome");
+                else
+                    return View();
+            }
         }
 
         // POST: UsersAccount/Login
         [HttpPost, ActionName("Login")]
-        public async Task<IActionResult> Login(string auto)
+        public async Task<IActionResult> Login(string na, string pa, string auto)
         {
-            return View();
+            var ur = await _context.UserAccount.FromSqlRaw("SELECT * FROM users_account WHERE Name = {0} AND Password = {1}", na, pa).FirstOrDefaultAsync();
+            if (ur != null)
+            {
+                int id = ur.Id;
+                string nal = ur.Name;
+                string ro = ur.Role;
+                HttpContext.Session.SetString("userId", Convert.ToString(id));
+                HttpContext.Session.SetString("Name", nal);
+                HttpContext.Session.SetString("Role", ro);
+
+                if (auto == "on")
+                {
+                    HttpContext.Response.Cookies.Append("Name", nal);
+                    HttpContext.Response.Cookies.Append("Role", ro);
+                }
+                if (ro == "Customer")
+                    return RedirectToAction("UsersAccount", "CustomerHome");
+                else if (ro == "Admin")
+                    return RedirectToAction("UsersAccount", "AdminHome");
+                else
+                    return View();
+            }
+            else
+            {
+                ViewData["Message"] = "Wrong UserName or Password!";
+                return View();
+            }
         }
 
         // POST: UsersAccount/Logout
@@ -97,7 +138,7 @@ namespace web2Project.Controllers
         }
 
         // GET: UsersAccount/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -157,7 +198,7 @@ namespace web2Project.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id")] UserAccount userAccount)
+        public async Task<IActionResult> Edit(int id, [Bind("Id")] UserAccount userAccount)
         {
             if (id != userAccount.Id)
             {
@@ -188,7 +229,7 @@ namespace web2Project.Controllers
         }
 
         // GET: UsersAccount/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
@@ -220,7 +261,7 @@ namespace web2Project.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UserAccountExists(string id)
+        private bool UserAccountExists(int id)
         {
             return _context.UserAccount.Any(e => e.Id == id);
         }
