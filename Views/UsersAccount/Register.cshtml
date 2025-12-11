@@ -1,0 +1,87 @@
+﻿@model web2Project.Models.Customer
+<style>
+	body {
+		background-image: url('/images/pharmacybg.png');
+		background-position: center;
+		background-repeat: no-repeat;
+		background-attachment: fixed;
+	}
+
+	.center {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 80vh;
+	}
+
+	.register-card {
+		background-color: rgba(33, 37, 41, 0.85);
+		padding: 40px;
+		border-radius: 15px;
+		box-shadow: 0 0 20px rgba(0,0,0,0.5);
+		width: 100%;
+		max-width: 600px;
+		color: white;
+	}
+</style>
+
+<div class="center">
+	<form asp-action="Register" class="register-card">
+		<h1 class="text-center">Customer Registration</h1>
+
+		<div class="form-floating mb-3 mt-3">
+			<input asp-for="Name" class="form-control" placeholder="Name" required />
+			<label class="control-label">Name</label>
+			<div class="valid-feedback">Valid.</div>
+			<div class="invalid-feedback">Please fill out this field.</div>
+		</div>
+		<div class="form-floating mb-3 mt-3">
+			<input asp-for="Password" type="password" class="form-control" placeholder="Password" required />
+			<label class="control-label">Password</label>
+			<div class="valid-feedback">Valid.</div>
+			<div class="invalid-feedback">Please fill out this field.</div>
+		</div>
+		<div class="form-floating mb-3 mt-3">
+			<input asp-for="Email" type="email" class="form-control" placeholder="Email" />
+			<label class="control-label">Email (Optional)</label>
+			<div class="valid-feedback">Valid.</div>
+			<span asp-validation-for="Email" class="text-danger"></span>
+		</div>
+		<div class="form-floating mb-3 mt-3">
+			<select class="form-select" id="sel" asp-for="Job">
+				<option value="" disabled selected>Select Job (Optional)</option>
+				<option>Teacher</option>
+				<option>Engineer</option>
+				<option>Doctor</option>
+				<option>Student</option>
+			</select>
+			<label for="sel" class="form-label">Select Job:</label>
+			<div class="valid-feedback">Valid.</div>
+			<div class="invalid-feedback">Please fill out this field.</div>
+		</div>
+		<div class="form-group mb-3 mt-3">
+			<div class="checkbox">
+				<label> <input type="radio" asp-for="Gender" value="male" /> Male</label>
+			</div>
+			<div class="checkbox">
+				<label> <input type="radio" asp-for="Gender" value="female" /> Female</label>
+			</div>
+			<div class="valid-feedback">Valid.</div>
+			<div class="invalid-feedback">Please fill out this field.</div>
+		</div>
+		<div class="form-group mb-3 mt-3">
+			<div class="checkbox">
+				<label><input type="checkbox" asp-for="Married" /> Married </label>
+			</div>
+		</div>
+		<div class="form-floating mb-3 mt-3">
+			<textarea class="form-control" id="location" asp-for="Location" placeholder="Location"></textarea>
+			<label for="location">Location (Optional)</label>
+		</div>
+		<div class="d-grid">
+			<button type="submit" class="btn btn-primary">Save</button>
+			<h2>@ViewData["Message"]</h2>
+		</div>
+	</form>
+</div>
+

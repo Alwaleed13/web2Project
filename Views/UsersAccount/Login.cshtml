@@ -30,9 +30,8 @@
 </style>
 
 <div class ="center">
-
 	<form asp-action="Login" class="login-card">
-		<h1>Login </h1>
+		<h1 class="text-center">Login </h1>
     <div class="form-floating mb-3 mt-3">
 		<input name="na" class="form-control" placeholder="Name" required />
         <label class="control-label"> User Name</label>
@@ -45,10 +44,21 @@
         <div class="valid-feedback">Valid.</div>
         <div class="invalid-feedback">Please fill out this field.</div>
     </div>
-    <button type="submit" class="btn btn-primary">Login</button>
-    <p style="color:red"> @ViewData["message"]</p>
-    <div>
-        <input type="checkbox" name="auto" /> Auto Login
-    </div>
+        <div class="form-check mb-3">
+            <input type="checkbox" name="auto" class="form-check-input" id="autoLogin" />
+            <label for="autoLogin"> Auto Login </label>
+        </div>
+
+        <div class="d-grid mb-3">
+            <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+
+        <div class="text-center mb-3">
+            <span class="text-danger fw-bold">@ViewData["message"]</span>
+        </div>
+
+        <div class="text-center">
+            Not Registered? <a asp-action="Register">Register</a>
+        </div>
 </form>
 </div>

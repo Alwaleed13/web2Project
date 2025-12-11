@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using web2Project.Data;
 using web2Project.Models;
@@ -100,9 +101,13 @@ namespace web2Project.Controllers
 
         // POST: UsersAccount/Logout
         [HttpPost, ActionName("Logout")]
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
-            return View();
+            HttpContext.Session.Clear();
+            HttpContext.Response.Cookies.Delete("Name");
+            HttpContext.Response.Cookies.Delete("Role");
+
+            return RedirectToAction("Login", "UsersAccount");
         }
 
         // GET: UsersAccount/Register
@@ -113,8 +118,36 @@ namespace web2Project.Controllers
 
         // POST: UsersAccount/Register
         [HttpPost, ActionName("Register")]
-        public async Task<IActionResult> Register(string auto)
+        public IActionResult Register([Bind("Name,Password,Email,Job,Married,Gender,Location")] Customer cu)
         {
+            SqlConnection conn = new SqlConnection("Data Source=.\\sqlexpress;Initial Catalog=Project;Integrated Security=True;Trust Server Certificate=True");
+            conn.Open();
+            string sql;
+            sql = "SELECT * FROM users_account WHERE Name = '" + cu.Name + "'";
+            SqlCommand comm = new SqlCommand(sql, conn);
+            SqlDataReader reader = comm.ExecuteReader();
+            if (reader.Read())
+            {
+                ViewData["Message"] = "UserName already exists!";
+                reader.Close();  
+            }
+            else
+            {
+                reader.Close();
+                sql = "INSERT INTO Customer (Name, Password, Email, Job, Married, Gender, Location) VALUES ('" + cu.Name + "','" +
+                    cu.Password + "','" + cu.Email + "','" + cu.Job + "','" + cu.Married + "','" + cu.Gender + "','" + cu.Location + "')";
+
+                comm = new SqlCommand(sql, conn);
+                comm.ExecuteNonQuery();
+
+                string sqlAccount = "INSERT INTO users_account (Name, Password, Role) VALUES ('" + cu.Name + "','" + cu.Password + "', 'Customer')";
+
+                SqlCommand commAccount = new SqlCommand(sqlAccount, conn);
+                commAccount.ExecuteNonQuery();
+
+                return RedirectToAction("Login");
+            }
+            conn.Close();
             return View();
         }
 
