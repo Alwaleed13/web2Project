@@ -1,0 +1,31 @@
+﻿@model web2Project.Models.UserAccount
+@{Layout = "~/Views/Shared/AdminLayout.cshtml";}
+<style>
+	body {
+		background-image: url('/images/pharmacybg.png');
+		background-position: center;
+		background-repeat: no-repeat;
+		background-attachment: fixed;
+	}
+
+	.center {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 80vh;
+	}
+
+	.register-card {
+		background-color: rgba(33, 37, 41, 0.85);
+		padding: 40px;
+		border-radius: 15px;
+		box-shadow: 0 0 20px rgba(0,0,0,0.5);
+		width: 100%;
+		max-width: 600px;
+		color: white;
+	}
+</style>
+
+<div class="center">
+	<h1 class="text-center">Welcome @Context.Session.GetString("Name")</h1>
+</div>

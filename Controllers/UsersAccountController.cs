@@ -23,13 +23,57 @@ namespace web2Project.Controllers
         // GET: UsersAccount/CustomerHome
         public IActionResult CustomerHome()
         {
-            return View();
+            string role = HttpContext.Session.GetString("Role");
+
+            if (role == "Customer")
+            {
+                return View();
+            }
+            else if (HttpContext.Request.Cookies.ContainsKey("Role"))
+            {
+                role = HttpContext.Request.Cookies["Role"].ToString();
+                string name = HttpContext.Request.Cookies["Name"].ToString();
+
+                HttpContext.Session.SetString("Name", name);
+                HttpContext.Session.SetString("Role", role);
+
+                if (role == "Customer")
+                    return View();
+                else
+                    return RedirectToAction("AdminHome", "UsersAccount");
+            }
+            else
+            {
+                return RedirectToAction("Login", "UsersAccount");
+            }
         }
 
         // GET: UsersAccount/AdminHome
         public IActionResult AdminHome()
         {
-            return View();
+            string role = HttpContext.Session.GetString("Role");
+
+            if (role == "Admin")
+            {
+                return View();
+            }
+            else if (HttpContext.Request.Cookies.ContainsKey("Role"))
+            {
+                role = HttpContext.Request.Cookies["Role"].ToString();
+                string name = HttpContext.Request.Cookies["Name"].ToString();
+
+                HttpContext.Session.SetString("Name", name);
+                HttpContext.Session.SetString("Role", role);
+
+                if (role == "Admin")
+                    return View();
+                else
+                    return RedirectToAction("CustomerHome", "UsersAccount");
+            }
+            else
+            {
+                return RedirectToAction("Login", "UsersAccount");
+            }
         }
 
         // GET: UsersAccount/Email
@@ -58,9 +102,9 @@ namespace web2Project.Controllers
                 HttpContext.Session.SetString("Role", ro);
 
                 if (ro == "Customer")
-                    return RedirectToAction("UsersAccount", "CustomerHome");
+                    return RedirectToAction("CustomerHome", "UsersAccount");
                 else if (ro == "Admin")
-                    return RedirectToAction("UsersAccount", "AdminHome");
+                    return RedirectToAction("AdminHome", "UsersAccount");
                 else
                     return View();
             }
@@ -86,9 +130,9 @@ namespace web2Project.Controllers
                     HttpContext.Response.Cookies.Append("Role", ro);
                 }
                 if (ro == "Customer")
-                    return RedirectToAction("UsersAccount", "CustomerHome");
+                    return RedirectToAction("CustomerHome", "UsersAccount");
                 else if (ro == "Admin")
-                    return RedirectToAction("UsersAccount", "AdminHome");
+                    return RedirectToAction("AdminHome", "UsersAccount");
                 else
                     return View();
             }
@@ -100,7 +144,6 @@ namespace web2Project.Controllers
         }
 
         // POST: UsersAccount/Logout
-        [HttpPost, ActionName("Logout")]
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
@@ -109,6 +152,8 @@ namespace web2Project.Controllers
 
             return RedirectToAction("Login", "UsersAccount");
         }
+
+
 
         // GET: UsersAccount/Register
         public IActionResult Register()
