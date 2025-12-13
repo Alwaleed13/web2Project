@@ -11,6 +11,13 @@
 		background-attachment: fixed;
 	}
 
+	.center {
+		display: flex;
+		align-items: flex-start;
+		justify-content: center;
+		min-height: 100vh;
+	}
+
 	.card {
 		background-color: rgba(33, 37, 41, 0.85);
 		padding: 40px;
@@ -20,15 +27,9 @@
 	}
 </style>
 
+<div class="card">
 
-<div class="card col-md-7 mx-auto mt-5">
-
-	<h1 class="text-center">Manage Item</h1>
-	<hr />
-	<p class="d-flex justify-content-center">
-		<button type="button" class="btn btn-info btn-lg" data-bs-toggle="modal" data-bs-target="#insertModal">New Item</button>
-		@await Html.PartialAsync("InsertItem", new Item())
-	</p>
+	<h1>Item List</h1>
 
 	<table class="table">
 		<thead>
@@ -37,32 +38,50 @@
 					@Html.DisplayNameFor(model => model.Name)
 				</th>
 				<th>
+					@Html.DisplayNameFor(model => model.Description)
+				</th>
+				<th>
 					@Html.DisplayNameFor(model => model.Price)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.Discount)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.Category)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.Quantity)
 				</th>
 				<th>
 					@Html.DisplayNameFor(model => model.ImgFile)
 				</th>
-				<th>Action</th>
 			</tr>
 		</thead>
 		<tbody>
 			@foreach (var item in Model)
 			{
-				<tr class="align-middle">
+				<tr>
 					<td>
 						@Html.DisplayFor(modelItem => item.Name)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Description)
 					</td>
 					<td>
 						@Html.DisplayFor(modelItem => item.Price)
 					</td>
 					<td>
-						<img src="~/images/@item.ImgFile" width="60" height="60" style="border-radius: 5px;" />
+						@Html.DisplayFor(modelItem => item.Discount)
 					</td>
 					<td>
-						<a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Details</a>
-						<a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
-						<a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+						@Html.DisplayFor(modelItem => item.Category)
 					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Quantity)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.ImgFile)
+					</td>	
 				</tr>
 			}
 		</tbody>

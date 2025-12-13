@@ -14,8 +14,9 @@ namespace web2Project.Data
         {
         }
 
-        public DbSet<web2Project.Models.UserAccount> UserAccount { get; set; } = default!;
-        public DbSet<web2Project.Models.Item> Item { get; set; } = default!;
-        public DbSet<web2Project.Models.Order> Order { get; set; } = default!;
+        public DbSet<web2Project.Models.UserAccount> users_account { get; set; } = default!;
+        public DbSet<web2Project.Models.Item> items { get; set; } = default!;
+        public DbSet<web2Project.Models.Order> orders { get; set; } = default!;
+        public DbSet<web2Project.Models.Customer> customer { get; set; } = default!;
     }
 }

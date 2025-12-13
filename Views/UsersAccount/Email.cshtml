@@ -1,0 +1,44 @@
+﻿@{
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<style>
+    body {
+        background-image: url('/images/pharmacybg.png');
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+
+    .card {
+        background-color: rgba(33, 37, 41, 0.85);
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        color: white;
+    }
+</style>
+<div class="card col-md-7 mx-auto mt-5">
+    <h1 class="text-center">Send Email</h1>
+    <form asp-action="email">
+        <div class="form-floating mb-3 mt-3">
+            <input name="address" class="form-control" placeholder="Adress" required />
+            <label class="control-label">Adress</label>
+            <div class="valid-feedback">Valid.</div>
+            <div class="invalid-feedback">Please fill out this field.</div>
+		</div>
+        <div class="form-floating mb-3 mt-3">
+            <input name="subject" class="form-control" placeholder="Subject" required />
+            <label class="control-label">Subject</label>
+            <div class="valid-feedback">Valid.</div>
+            <div class="invalid-feedback">Please fill out this field.</div>
+        </div>
+		<div class="form-floating mb-3 mt-3">
+			<textarea class="form-control" name="body" placeholder="Body"></textarea>
+            <label for="body">Body</label>
+        </div>
+        <div class="d-grid">
+        <button type="submit" class="btn btn-primary">Send</button>
+			<p> @ViewData["message"]</p>
+		</div>
+    </form>
+</div>

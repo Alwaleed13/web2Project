@@ -64,7 +64,7 @@ namespace web2Project.Controllers
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Order.ToListAsync());
+            return View(await _context.orders.ToListAsync());
         }
 
         // GET: Orders/Details/5
@@ -75,7 +75,7 @@ namespace web2Project.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Order
+            var order = await _context.orders
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (order == null)
             {
@@ -115,7 +115,7 @@ namespace web2Project.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Order.FindAsync(id);
+            var order = await _context.orders.FindAsync(id);
             if (order == null)
             {
                 return NotFound();
@@ -166,7 +166,7 @@ namespace web2Project.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Order
+            var order = await _context.orders
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (order == null)
             {
@@ -181,10 +181,10 @@ namespace web2Project.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var order = await _context.Order.FindAsync(id);
+            var order = await _context.orders.FindAsync(id);
             if (order != null)
             {
-                _context.Order.Remove(order);
+                _context.orders.Remove(order);
             }
 
             await _context.SaveChangesAsync();
@@ -193,7 +193,7 @@ namespace web2Project.Controllers
 
         private bool OrderExists(int id)
         {
-            return _context.Order.Any(e => e.Id == id);
+            return _context.orders.Any(e => e.Id == id);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -77,15 +78,51 @@ namespace web2Project.Controllers
         }
 
         // GET: UsersAccount/Email
-        public IActionResult Email ()
+        public async Task<IActionResult> EmailAsync()
         {
-            return View();
+            string role = HttpContext.Session.GetString("Role");
+
+            if (role == "Admin")
+            {
+                ViewData["Message"] = "";
+                return View();
+            }
+            else if (HttpContext.Request.Cookies.ContainsKey("Role"))
+            {
+                role = HttpContext.Request.Cookies["Role"].ToString();
+                string name = HttpContext.Request.Cookies["Name"].ToString();
+
+                HttpContext.Session.SetString("Name", name);
+                HttpContext.Session.SetString("Role", role);
+
+                if (role == "Admin")
+                {
+                    ViewData["Message"] = "";
+                    return View();
+                }
+            }
+            return RedirectToAction("Login", "UsersAccount");
         }
 
         // POST: UsersAccount/Email
         [HttpPost, ActionName("Email")]
-        public async Task<IActionResult> Email(string auto)
+        [ValidateAntiForgeryToken]
+        public IActionResult Email(string address, string subject, string body)
         {
+            SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
+            var mail = new MailMessage();
+            mail.From = new MailAddress("alwaleedhhabibib@gmail.com");
+            mail.To.Add(address);
+            mail.Subject = subject;
+            mail.IsBodyHtml = true;
+            mail.Body = body;
+            SmtpServer.Port = 587;
+            SmtpServer.UseDefaultCredentials = false;
+            SmtpServer.Credentials = new System.Net.NetworkCredential("alwaleedhhabib@gmail.com", "jsgwapsjfwhcjrem");
+            SmtpServer.EnableSsl = true;
+            SmtpServer.Send(mail);
+
+            ViewData["Message"] = "Email sent!";
             return View();
         }
 
@@ -114,7 +151,7 @@ namespace web2Project.Controllers
         [HttpPost, ActionName("Login")]
         public async Task<IActionResult> Login(string na, string pa, string auto)
         {
-            var ur = await _context.UserAccount.FromSqlRaw("SELECT * FROM users_account WHERE Name = {0} AND Password = {1}", na, pa).FirstOrDefaultAsync();
+            var ur = await _context.users_account.FromSqlRaw("SELECT * FROM users_account WHERE Name = {0} AND Password = {1}", na, pa).FirstOrDefaultAsync();
             if (ur != null)
             {
                 int id = ur.Id;
@@ -185,7 +222,7 @@ namespace web2Project.Controllers
                 comm = new SqlCommand(sql, conn);
                 comm.ExecuteNonQuery();
 
-                string sqlAccount = "INSERT INTO users_account (Name, Password, Role) VALUES ('" + cu.Name + "','" + cu.Password + "', 'Customer')";
+                string sqlAccount = "INSERT INTO users_account (Name, Password, Role, Pubdate) VALUES ('" + cu.Name + "','" + cu.Password + "', 'Customer', GETDATE())";
 
                 SqlCommand commAccount = new SqlCommand(sqlAccount, conn);
                 commAccount.ExecuteNonQuery();
@@ -196,23 +233,46 @@ namespace web2Project.Controllers
             return View();
         }
 
-        //GET: UsersAccount/SearchAll
-        public IActionResult SearchAll()
+        //GET: UsersAccount/Search
+        public IActionResult Search()
         {
-            return View();
+            string role = HttpContext.Session.GetString("Role");
+
+            if (role == "Admin")
+            {
+                List<UserAccount> userr = new List<UserAccount>();
+                return View(userr);
+            }
+            else if (HttpContext.Request.Cookies.ContainsKey("Role"))
+            {
+                role = HttpContext.Request.Cookies["Role"].ToString();
+                string name = HttpContext.Request.Cookies["Name"].ToString();
+
+                HttpContext.Session.SetString("Name", name);
+                HttpContext.Session.SetString("Role", role);
+
+                if (role == "Admin")
+                {
+                    List<UserAccount> userr = new List<UserAccount>();
+                    return View(userr);
+                }
+            }
+            return RedirectToAction("Login", "UsersAccount");
         }
 
-        // POST: UsersAccount/SearchAll
-        [HttpPost, ActionName("SearchAll")]
-        public async Task<IActionResult> SearchAll(string auto)
+        // POST: UsersAccount/Search
+        [HttpPost, ActionName("Search")]
+        public async Task<IActionResult> Search(string user)
         {
-            return View();
+            var userr = await _context.users_account.FromSqlRaw("select * from users_account where Name = '" + user + "' ").ToListAsync();
+
+            return View(userr); ;
         }
 
         // GET: UsersAccount
         public async Task<IActionResult> Index()
         {
-            return View(await _context.UserAccount.ToListAsync());
+            return View(await _context.users_account.ToListAsync());
         }
 
         // GET: UsersAccount/Details/5
@@ -223,7 +283,7 @@ namespace web2Project.Controllers
                 return NotFound();
             }
 
-            var userAccount = await _context.UserAccount
+            var userAccount = await _context.users_account
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (userAccount == null)
             {
@@ -236,7 +296,26 @@ namespace web2Project.Controllers
         // GET: UsersAccount/Create(AdminAdd)
         public IActionResult Create()
         {
-            return View();
+            string role = HttpContext.Session.GetString("Role");
+
+            if (role == "Admin")
+            {
+                return View();
+            }
+            else if (HttpContext.Request.Cookies.ContainsKey("Role"))
+            {
+                role = HttpContext.Request.Cookies["Role"].ToString();
+                string name = HttpContext.Request.Cookies["Name"].ToString();
+
+                HttpContext.Session.SetString("Name", name);
+                HttpContext.Session.SetString("Role", role);
+
+                if (role == "Admin")
+                {
+                    return View();
+                }
+            }
+            return RedirectToAction("Login", "UsersAccount");
         }
 
         // POST: UsersAccount/Create
@@ -244,15 +323,31 @@ namespace web2Project.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id")] UserAccount userAccount)
+        public IActionResult Create([Bind("Name,Password")] UserAccount usa)
         {
-            if (ModelState.IsValid)
+            SqlConnection conn = new SqlConnection("Data Source=.\\sqlexpress;Initial Catalog=Project;Integrated Security=True;Trust Server Certificate=True");
+            conn.Open();
+            string sql;
+            sql = "SELECT * FROM users_account WHERE Name = '" + usa.Name + "'";
+            SqlCommand comm = new SqlCommand(sql, conn);
+            SqlDataReader reader = comm.ExecuteReader();
+            if (reader.Read())
             {
-                _context.Add(userAccount);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ViewData["Message"] = "This UserName is customer or already exists!";
+                reader.Close();
             }
-            return View(userAccount);
+            else
+            {
+                reader.Close();
+                sql = "INSERT INTO users_account (Name, Password, Role, Pubdate) VALUES ('" + usa.Name + "','" + usa.Password + "', 'Admin', GETDATE())";
+
+                comm = new SqlCommand(sql, conn);
+                comm.ExecuteNonQuery();
+
+                return RedirectToAction("AdminHome");
+            }
+            conn.Close();
+            return View();
         }
 
         // GET: UsersAccount/Edit/5
@@ -263,7 +358,7 @@ namespace web2Project.Controllers
                 return NotFound();
             }
 
-            var userAccount = await _context.UserAccount.FindAsync(id);
+            var userAccount = await _context.users_account.FindAsync(id);
             if (userAccount == null)
             {
                 return NotFound();
@@ -314,7 +409,7 @@ namespace web2Project.Controllers
                 return NotFound();
             }
 
-            var userAccount = await _context.UserAccount
+            var userAccount = await _context.users_account
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (userAccount == null)
             {
@@ -329,10 +424,10 @@ namespace web2Project.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var userAccount = await _context.UserAccount.FindAsync(id);
+            var userAccount = await _context.users_account.FindAsync(id);
             if (userAccount != null)
             {
-                _context.UserAccount.Remove(userAccount);
+                _context.users_account.Remove(userAccount);
             }
 
             await _context.SaveChangesAsync();
@@ -341,7 +436,7 @@ namespace web2Project.Controllers
 
         private bool UserAccountExists(int id)
         {
-            return _context.UserAccount.Any(e => e.Id == id);
+            return _context.users_account.Any(e => e.Id == id);
         }
     }
 }

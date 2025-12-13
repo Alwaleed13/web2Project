@@ -1,0 +1,94 @@
+﻿@model IEnumerable<web2Project.Models.UserAccount>
+@{
+	Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<style>
+	body {
+		background-image: url('/images/pharmacybg.png');
+		background-position: center;
+		background-repeat: no-repeat;
+		background-attachment: fixed;
+	}
+
+	.card {
+		background-color: rgba(33, 37, 41, 0.85);
+		padding: 40px;
+		border-radius: 15px;
+		box-shadow: 0 0 20px rgba(0,0,0,0.5);
+		color: white;
+	}
+</style>
+
+<div class="card col-md-7 mx-auto mt-5">
+
+<h1 class="text-center">Search for user</h1>
+
+<form asp-action="Search">
+	<div class="form-group">
+	</div>
+	<div class="form-floating mb-3 mt-3">
+		<select class="form-select" id="ro" name="role" onchange="gettitle()">
+			<option value="0" disabled selected>Select Role</option>
+			<option value="Admin">Admin</option>
+			<option value="Customer">Customer</option>
+		</select>
+		<label for="sel" class="form-label">Select Role:</label>
+	</div>
+	<div class="form-floating mb-3 mt-3">
+		<select class="form-select" id="us" name="user"></select>
+	</div>
+		<div class="d-grid mb-3 mt-3">
+		<button type="submit" class="btn btn-primary">Save</button> <hr />
+	</div>
+</form>
+<script>
+	  async function gettitle() {
+			var rr = document.getElementById('ro').value;
+	var response = await fetch('/api/GetNameAPI/' + rr);
+				let x = await response.json();
+			var dd = "<option disabled selected>Please select</option>";
+			for (i = 0; i < x.length; i++) {
+				dd += "<option>" + x[i].name + "</option>";
+			}
+			document.getElementById("us").innerHTML = dd;
+		}
+</script>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.Name)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Password)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Role)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Pubdate)
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.Name)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Password)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Role)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Pubdate)
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+</div>

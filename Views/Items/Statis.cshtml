@@ -1,0 +1,105 @@
+﻿@{
+    ViewData["Title"] = "Statistics";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<style>
+    body {
+        background-image: url('/images/pharmacybg.png');
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+
+    .main-card {
+        background-color: rgba(33, 37, 41, 0.90);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        color: white;
+    }
+
+    .card-body img {
+        border-radius: 5px;
+    }
+</style>
+
+<div class="card main-card col-md-8 mx-auto mt-5">
+
+    <h1 class="text-center mb-2">Item Dashboard</h1>
+
+    <div id="chart_div" class="d-flex justify-content-center" style="height: 300px;"></div>
+
+    <hr />
+
+    <div class="row text-center">
+
+        <div class="col-md-4">
+            <div class='card'>
+                <div class="card-header bg-primary text-center">Medicine</div>
+                <div class="card-body">
+                    <img src="~/images/panadol.jpg" width='50px'>
+                </div>
+                <div class="card-footer" style="color: white;">
+                    Count <div> @ViewData["d1"] </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-danger text-center">Personal Care</div>
+                <div class="card-body">
+                    <img src="~/images/face_cream.png" width='50px'>
+                </div>
+                <div class="card-footer" style="color: white;">
+                    Count <div>@ViewData["d2"] </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class='card'>
+                <div class="card-header bg-warning text-center">Vitamins</div>
+                <div class="card-body">
+                    <img src="~/images/VitaminC.webp" width='50px'>
+                </div>
+                <div class="card-footer" style="color: white;">
+                    Count <div>@ViewData["d3"] </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Category');
+        data.addColumn('number', 'Count');
+
+        data.addRows([
+            ['Medicine', @ViewData["d1"]],
+            ['Personal Care', @ViewData["d2"]],
+            ['Vitamins', @ViewData["d3"]]
+        ]);
+
+        var options = {
+            'title': 'Items Statistics',
+            'width': 400,
+            'height': 300,
+            'backgroundColor': 'transparent',
+            'is3D': true,
+            'legend': { textStyle: { color: 'white' } },
+            'titleTextStyle': { color: 'white' }
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+    }
+</script>

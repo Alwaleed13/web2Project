@@ -10,15 +10,14 @@ namespace web2Project.Controllers
     public class GetNameAPIController : ControllerBase
     {
 
-        [HttpGet]
-        public IEnumerable<UserAccount> Get()
+        [HttpGet("{ro}")]
+        public IEnumerable<UserAccount> Get(string ro)
         {
             List<UserAccount> li = new List<UserAccount>();
-            var builder = WebApplication.CreateBuilder();
-            string conStr = builder.Configuration.GetConnectionString("web2projectdbserverConnection");
-            SqlConnection conn = new SqlConnection(conStr);
+            SqlConnection conn = new SqlConnection("Data Source=.\\sqlexpress;Initial Catalog=Project;Integrated Security=True;Trust Server Certificate=True");
+
             string sql;
-            sql = "select * from customer";
+            sql = "select * from users_account where Role = '" + ro + "' ";
             SqlCommand comm = new SqlCommand(sql, conn);
             conn.Open();
             SqlDataReader reader = comm.ExecuteReader();

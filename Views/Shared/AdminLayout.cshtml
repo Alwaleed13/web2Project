@@ -12,7 +12,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom mb-3" style="background-color: rgba(33, 37, 41, 0.95);">
             <div class="container-fluid">
-                <a class="navbar-brand fw-bold mx-2 px-3" asp-area="" asp-controller="UsersAccount" asp-action="Index">Admin Home</a>
+                <a class="navbar-brand fw-bold mx-2 px-3" asp-area="" asp-controller="UsersAccount" asp-action="AdminHome">Admin Home</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -24,22 +24,22 @@
                                 Items Management
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-controller="Items" asp-action="ItemManagement">Manage Items</a></li>
-                                <li><a class="dropdown-item" asp-controller="Items" asp-action="ListItem">List Items</a></li>
+                                <li><a class="dropdown-item" asp-controller="Items" asp-action="Index">Manage Items</a></li>
+                                <li><a class="dropdown-item" asp-controller="Items" asp-action="List">List Items</a></li>
                                 <li><a class="dropdown-item" asp-controller="Items" asp-action="PurchaseReport">Purchase Report</a></li>
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light mx-2" asp-area="" asp-controller="Items" asp-action="Dashboard">Dashboard</a>
+							<a class="nav-link text-light mx-2" asp-area="" asp-controller="Items" asp-action="Statis">📊 Dashboard</a>
 						</li>
 						<li class="nav-item">
-                            <a class="nav-link text-light mx-2" asp-area="" asp-controller="UsersAccount" asp-action="AdminHome">Send Email</a>
+							<a class="nav-link text-light mx-2" asp-area="" asp-controller="UsersAccount" asp-action="Email">✉️ Send Email</a>
 						</li>
                         <li class="nav-item">
-                            <a class="nav-link text-light mx-2" asp-area="" asp-controller="UsersAccount" asp-action="Search">Search User</a>
+                            <a class="nav-link text-light mx-2" asp-area="" asp-controller="UsersAccount" asp-action="Search">🔎 Search User</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="UsersAccount" asp-action="Create">Add Admin</a>
+							<a class="nav-link text-light" asp-area="" asp-controller="UsersAccount" asp-action="Create">➕ Add Admin</a>
                         </li>
                         <li class="nav-item ms-auto">
                             <a class="nav-link text-danger" asp-area="" asp-controller="UsersAccount" asp-action="Logout">Logout</a>
