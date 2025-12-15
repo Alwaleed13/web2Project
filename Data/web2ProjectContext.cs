@@ -18,5 +18,7 @@ namespace web2Project.Data
         public DbSet<web2Project.Models.Item> items { get; set; } = default!;
         public DbSet<web2Project.Models.Order> orders { get; set; } = default!;
         public DbSet<web2Project.Models.Customer> customer { get; set; } = default!;
+        public DbSet<web2Project.Models.OrderLine> order_line { get; set; } = default!;
+        public DbSet<web2Project.Models.Report> report { get; set; }
     }
 }

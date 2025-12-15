@@ -1,0 +1,74 @@
+﻿@model IEnumerable<web2Project.Models.Order>
+@{
+    Layout = "~/Views/Shared/CustomerLayout.cshtml";
+}
+
+<style>
+    body {
+        background-image: url('/images/pharmacybg.png');
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+
+    .card {
+        background-color: rgba(33, 37, 41, 0.85);
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        color: white;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class="card col-md-6 mx-auto mt-5">
+    <h1 class="text-center">My Orders</h1>
+    <hr />
+
+    <table class="table text-white">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Name)</th>
+                <th>@Html.DisplayNameFor(model => model.Total)</th>
+                <th>@Html.DisplayNameFor(model => model.OrderDate)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Total)</td>
+                    <td>@Html.DisplayFor(modelItem => item.OrderDate)</td>
+                    <td>
+                        <a asp-action="OrderLine"
+                           asp-route-orid="@item.Id"
+                           class="btn btn-primary btn-sm">
+                            Details
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="d-grid gap-3 mt-4 text-center">
+        <a asp-controller="UsersAccount" asp-action="CustomerHome" class="btn btn-secondary">Back to Home</a>
+    </div>
+</div>
+@if (TempData["Message"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            Swal.fire({
+                title: 'Success!',
+                text: '@TempData["Message"]',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                background: '#212529',
+                color: '#fff'
+            });
+        });
+    </script>
+}

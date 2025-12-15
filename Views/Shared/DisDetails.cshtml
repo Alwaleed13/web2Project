@@ -1,0 +1,62 @@
+﻿@model web2Project.Models.Item
+
+<div class="modal fade" id="detailsModal-@Model.Id" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-center w-100">Item Details</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-mb-6">
+                        <h1 class="text-center">@Model.Name</h1>
+                        <hr />
+
+                        <dl class="row">
+                            <dt class="col-sm-3">
+                                @Html.DisplayNameFor(model => model.Name)
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(model => model.Name)
+                            </dd>
+                             <hr />
+                            <dt class="col-sm-3">
+                                @Html.DisplayNameFor(model => model.Description)
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(model => model.Description)
+                            </dd>
+                            <hr />
+                            <dt class="col-sm-3">
+                                @Html.DisplayNameFor(model => model.Price)
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(model => model.Price)
+                            </dd>
+                            <hr />
+                            <dt class="col-sm-3">
+                                @Html.DisplayNameFor(model => model.Discount)
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(model => model.Discount)
+                            </dd>
+                            <hr />
+                            <dt class="col-sm-3">
+                                Product Image
+                            </dt>
+                            <dd class="col-sm-9">
+                                <img src="~/images/@Model.ImgFile" height="100" />
+                            </dd>
+                        </dl>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+                            <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

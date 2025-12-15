@@ -1,18 +1,55 @@
-﻿@model web2Project.Models.UserAccount
+﻿@model web2Project.Models.Customer
 
 @{
-    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
-<h1>Details</h1>
+<style>
+    body {
+        background-image: url('/images/pharmacybg.png');
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
 
-<div>
-    <h4>UserAccount</h4>
+    .card {
+        background-color: rgba(33, 37, 41, 0.85);
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        color: white;
+    }
+</style>
+
+<div class="card col-md-6 mx-auto mt-5">
+    <h1 class="text-center">Customer Details</h1>
     <hr />
+
     <dl class="row">
+        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Name)</dt>
+        <dd class="col-sm-8">@Html.DisplayFor(model => model.Name)</dd>
+
+        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Password)</dt>
+        <dd class="col-sm-8">@Html.DisplayFor(model => model.Password)</dd>
+
+        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Email)</dt>
+        <dd class="col-sm-8">@Html.DisplayFor(model => model.Email)</dd>
+
+        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Job)</dt>
+        <dd class="col-sm-8">@Html.DisplayFor(model => model.Job)</dd>
+
+        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Gender)</dt>
+        <dd class="col-sm-8">@Html.DisplayFor(model => model.Gender)</dd>
+
+        <dt class="col-sm-4">Married?</dt>
+        <dd class="col-sm-8">@(Model.Married ? "Yes" : "No")</dd>
+
+        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Location)</dt>
+        <dd class="col-sm-8">@Html.DisplayFor(model => model.Location)</dd>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+    <div class="d-grid gap-3 mt-4 text-center">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
 </div>

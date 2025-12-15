@@ -1,0 +1,68 @@
+﻿@model IEnumerable<web2Project.Models.Item>
+
+@{
+	Layout = "~/Views/Shared/CustomerLayout.cshtml";
+}
+
+<style>
+	body {
+		background-image: url('/images/pharmacybg.png');
+		background-position: center;
+		background-repeat: no-repeat;
+		background-attachment: fixed;
+	}
+
+	.main-card {
+		background-color: rgba(33, 37, 41, 0.85);
+		padding: 40px;
+		border-radius: 15px;
+		box-shadow: 0 0 20px rgba(0,0,0,0.5);
+		color: white;
+	}
+
+	.inner-card {
+		background-color: rgba(255, 255, 255, 0.06);
+		color: white;
+		height: 100%;
+	}
+
+	.card-body img {
+		border-radius: 5px;
+		max-width: 100%;
+		height: 100px;
+		object-fit: contain;
+	}
+</style>
+
+<div class="card main-card col-md-8 mx-auto mt-3">
+	<div class="row text-center g-4 justify-content-center">
+		@foreach (var item in Model)
+		{
+			<div class="col-md-4 col-sm-6">
+				<div class="card inner-card">
+					<div class="card-header bg-primary text-center text-truncate">
+						@item.Category
+					</div>
+
+					<div class="card-body">
+						<img src="~/images/@item.ImgFile" onerror="this.src='/images/default.png'">
+
+						<h5 class="mt-2 text-truncate">@item.Name</h5>
+						<p class="text-success fw-bold">@item.Price SAR</p>
+					</div>
+
+					<div class="card-footer border-0 bg-transparent">
+						<p class="d-flex justify-content-center">
+							<a asp-action="ItemBuyDetail"
+							   asp-route-id="@item.Id"
+							   class="btn btn-primary w-100 btn-lg">
+								Buy
+							</a>
+						</p>
+					</div>
+				</div>
+			</div>
+		}
+
+	</div>
+</div>

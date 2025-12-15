@@ -26,7 +26,7 @@
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" asp-controller="Items" asp-action="Index">Manage Items</a></li>
                                 <li><a class="dropdown-item" asp-controller="Items" asp-action="List">List Items</a></li>
-                                <li><a class="dropdown-item" asp-controller="Items" asp-action="PurchaseReport">Purchase Report</a></li>
+                                <li><a class="dropdown-item" asp-controller="Orders" asp-action="Index">Purchase Report</a></li>
                             </ul>
                         </li>
                         <li class="nav-item">
@@ -35,11 +35,15 @@
 						<li class="nav-item">
 							<a class="nav-link text-light mx-2" asp-area="" asp-controller="UsersAccount" asp-action="Email">✉️ Send Email</a>
 						</li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light mx-2" asp-area="" asp-controller="UsersAccount" asp-action="Search">🔎 Search User</a>
-                        </li>
-                        <li class="nav-item">
-							<a class="nav-link text-light" asp-area="" asp-controller="UsersAccount" asp-action="Create">➕ Add Admin</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light mx-2" href="#" role="button" data-bs-toggle="dropdown">
+                                User Management
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="UsersAccount" asp-action="Index">Manage Customers</a></li>
+								<li><a class="dropdown-item" asp-controller="UsersAccount" asp-action="Search">Search User</a></li>
+								<li><a class="dropdown-item" asp-controller="UsersAccount" asp-action="Create">Add Admin</a></li>
+                            </ul>
                         </li>
                         <li class="nav-item ms-auto">
                             <a class="nav-link text-danger" asp-area="" asp-controller="UsersAccount" asp-action="Logout">Logout</a>

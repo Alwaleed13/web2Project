@@ -1,0 +1,74 @@
+﻿@model IEnumerable<web2Project.Models.BuyItem>
+@{
+	Layout = "~/Views/Shared/CustomerLayout.cshtml";
+}
+<style>
+	body {
+		background-image: url('/images/pharmacybg.png');
+		background-position: center;
+		background-repeat: no-repeat;
+		background-attachment: fixed;
+	}
+
+	.card {
+		background-color: rgba(33, 37, 41, 0.85);
+		padding: 40px;
+		border-radius: 15px;
+		box-shadow: 0 0 20px rgba(0,0,0,0.5);
+		color: white;
+	}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class="card col-md-6 mx-auto mt-5">
+	<h1 class="text-center">My Cart</h1>
+	<hr />
+	<table class="table">
+		<thead>
+			<tr>
+				<th>@Html.DisplayNameFor(model => model.Name)</th>
+				<th>@Html.DisplayNameFor(model => model.Price)</th>
+				<th>@Html.DisplayNameFor(model => model.Quantity)</th>
+				<th> </th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>@Html.DisplayFor(modelItem => item.Name)</td>
+					<td>@Html.DisplayFor(modelItem => item.Price)</td>
+					<td>@Html.DisplayFor(modelItem => item.Quantity)</td>
+					<td>
+						<a asp-action="Delete"
+						   asp-route-id="@item.Id"
+						   class="btn btn-danger btn-sm">
+							Remove
+						</a>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+	<div class="d-grid gap-3 mt-4 text-center">
+		<p>
+			<a asp-action="CatalogueBuy" asp-controller="Orders" class="btn btn-primary">Select More</a>
+			<a asp-action="Buy" class="btn btn-success">Buy Now</a>
+		</p>
+	</div>
+</div>
+@if (TempData["Error"] != null)
+{
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			Swal.fire({
+				title: 'Oops...',
+				text: '@TempData["Error"]',
+				icon: 'error',
+				confirmButtonText: 'OK',
+				background: '#212529',
+				color: '#fff'
+			});
+		});
+	</script>
+}

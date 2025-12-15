@@ -1,0 +1,50 @@
+﻿@model IEnumerable<web2Project.Models.OrderLine>
+@{
+    Layout = "~/Views/Shared/CustomerLayout.cshtml";
+}
+
+<style>
+    body {
+        background-image: url('/images/pharmacybg.png');
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+
+    .card {
+        background-color: rgba(33, 37, 41, 0.85);
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        color: white;
+    }
+</style>
+
+<div class="card col-md-6 mx-auto mt-5">
+    <h1 class="text-center">Order Details</h1>
+    <hr />
+
+    <table class="table text-white">
+        <thead>
+            <tr>
+                <th>Item Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.ItemName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Price) SAR</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="d-grid gap-3 mt-4 text-center">
+        <a asp-action="MyOrder" class="btn btn-primary">Back to Orders</a>
+    </div>
+</div>

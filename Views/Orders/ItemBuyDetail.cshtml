@@ -1,0 +1,111 @@
+﻿@model web2Project.Models.Item
+@{
+	Layout = "~/Views/Shared/CustomerLayout.cshtml";
+}
+<style>
+	body {
+		background-image: url('/images/pharmacybg.png');
+		background-position: center;
+		background-repeat: no-repeat;
+		background-attachment: fixed;
+	}
+
+	.card {
+		background-color: rgba(33, 37, 41, 0.85);
+		padding: 40px;
+		border-radius: 15px;
+		box-shadow: 0 0 20px rgba(0,0,0,0.5);
+		color: white;
+	}
+</style>
+
+<div class="card col-md-6 mx-auto mt-5">
+
+	<h1 class="text-center">Item Buy Details</h1>
+	<hr />
+
+	<dl class="row">
+		<dt class="col-sm-3">
+			@Html.DisplayNameFor(model => model.Name)
+		</dt>
+		<dd class="col-sm-9">
+			@Html.DisplayFor(model => model.Name)
+		</dd>
+		<hr />
+		<dt class="col-sm-3">
+			@Html.DisplayNameFor(model => model.Description)
+		</dt>
+		<dd class="col-sm-9">
+			@Html.DisplayFor(model => model.Description)
+		</dd>
+		<hr />
+		<dt class="col-sm-3">
+			@Html.DisplayNameFor(model => model.Price)
+		</dt>
+		<dd class="col-sm-9">
+			@Html.DisplayFor(model => model.Price)
+		</dd>
+		<hr />
+		<dt class="col-sm-3">
+			@Html.DisplayNameFor(model => model.Discount)
+		</dt>
+		<dd class="col-sm-9">
+			@Html.DisplayFor(model => model.Discount)
+		</dd>
+		<hr />
+		<dt class="col-sm-3">
+			Product Image
+		</dt>
+		<dd class="col-sm-9">
+			<img src="~/images/@Model.ImgFile" height="100" />
+			<br />@Model.ImgFile
+		</dd>
+		<hr />
+	</dl>
+	
+	<form asp-action="CartAdd">
+		<input type="hidden" name="itemId" value=@Model.Id />
+		<div class="form-floating mb-3 mt-3">
+			<input name="quantity" class="form-control" id="qu" oninput="if(this.value < 1) this.value = 1;" onchange="gettotal()" placeholder="Quantity" required />
+			<label for="quantity" class="control-label">Quantity</label>
+		</div>
+		<div class='alert alert-success' id="tot"> </div>
+		<div class="d-grid gap-3 mt-4 text-center">
+			<button type="submit" class="btn btn-primary">Add to Cart</button>
+			<a asp-action="CustomerHome" class="btn btn-secondary px-4">Back to List</a>
+		</div>
+	</form>
+
+	@section scripts {
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+		<script>
+					function gettotal() {
+				tot = 0;
+				var q = parseInt(document.getElementById('qu').value);
+				var av = parseInt('@Model.Quantity');
+				var pr = parseFloat('@Model.Price');
+
+				if (q > av) {
+					Swal.fire({
+						icon: 'warning', 
+						title: 'Stock Limit',
+						text: 'Sorry, only ' + av + ' items are available in stock.',
+						confirmButtonColor: '#3085d6',
+						confirmButtonText: 'OK'
+					});
+					document.getElementById('qu').value = av;
+					q = av;
+				}
+				if (q < 0) q = 0;
+
+				tot = q * pr;
+				if ('@Model.Discount' == "yes") {
+					tot = (tot * 50) / 100
+				}
+				document.getElementById("tot").innerHTML = "Total = " + tot;
+			}
+		</script>
+	}
+
+</div>
+

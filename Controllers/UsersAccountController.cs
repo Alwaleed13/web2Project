@@ -28,7 +28,8 @@ namespace web2Project.Controllers
 
             if (role == "Customer")
             {
-                return View();
+                var offers = _context.items.Where(x => x.Discount == "yes").ToList();
+                return View(offers);
             }
             else if (HttpContext.Request.Cookies.ContainsKey("Role"))
             {
@@ -39,7 +40,10 @@ namespace web2Project.Controllers
                 HttpContext.Session.SetString("Role", role);
 
                 if (role == "Customer")
-                    return View();
+                {
+                    var offers = _context.items.Where(x => x.Discount == "yes").ToList();
+                    return View(offers);
+                }
                 else
                     return RedirectToAction("AdminHome", "UsersAccount");
             }
@@ -211,7 +215,7 @@ namespace web2Project.Controllers
             if (reader.Read())
             {
                 ViewData["Message"] = "UserName already exists!";
-                reader.Close();  
+                reader.Close();
             }
             else
             {
@@ -272,25 +276,42 @@ namespace web2Project.Controllers
         // GET: UsersAccount
         public async Task<IActionResult> Index()
         {
-            return View(await _context.users_account.ToListAsync());
+            string role = HttpContext.Session.GetString("Role");
+
+            if (role == "Admin")
+            {
+                return View(await _context.users_account.Where(u => u.Role == "Customer").ToListAsync());
+            }
+            else if (HttpContext.Request.Cookies.ContainsKey("Role"))
+            {
+                role = HttpContext.Request.Cookies["Role"].ToString();
+                string name = HttpContext.Request.Cookies["Name"].ToString();
+
+                HttpContext.Session.SetString("Name", name);
+                HttpContext.Session.SetString("Role", role);
+
+                if (role == "Admin")
+                {
+                    return View(await _context.users_account.Where(u => u.Role == "Customer").ToListAsync());
+                }
+            }
+            return RedirectToAction("Login", "UsersAccount");
         }
 
         // GET: UsersAccount/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            string role = HttpContext.Session.GetString("Role");
+            if (role != "Admin") return RedirectToAction("Login", "UsersAccount");
 
-            var userAccount = await _context.users_account
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (userAccount == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            return View(userAccount);
+            var user = await _context.users_account.FindAsync(id);
+            if (user == null) return NotFound();
+
+            var customer = await _context.customer.FirstOrDefaultAsync(c => c.Name == user.Name);
+            if (customer == null) return NotFound();
+            return View(customer);
         }
 
         // GET: UsersAccount/Create(AdminAdd)
@@ -351,86 +372,95 @@ namespace web2Project.Controllers
         }
 
         // GET: UsersAccount/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            string role = HttpContext.Session.GetString("Role");
+            if (role != "Admin") return RedirectToAction("Login", "UsersAccount");
 
-            var userAccount = await _context.users_account.FindAsync(id);
-            if (userAccount == null)
-            {
-                return NotFound();
-            }
-            return View(userAccount);
+            if (id == null) return NotFound();
+
+            var user = await _context.users_account.FindAsync(id);
+            if (user == null) return NotFound();
+
+            var customer = await _context.customer.FirstOrDefaultAsync(c => c.Name == user.Name);
+            if (customer == null) return NotFound();
+
+            return View(customer);
         }
 
         // POST: UsersAccount/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id")] UserAccount userAccount)
+        public async Task<IActionResult> Edit(int id, Customer customer)
         {
-            if (id != userAccount.Id)
-            {
-                return NotFound();
-            }
+            string role = HttpContext.Session.GetString("Role");
+            if (role != "Admin") return RedirectToAction("Login", "UsersAccount");
+
+            if (id != customer.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(userAccount);
+                    _context.Update(customer);
                     await _context.SaveChangesAsync();
+
+                    var loginAccount = await _context.users_account.FirstOrDefaultAsync(u => u.Name == customer.Name);
+                    if (loginAccount != null)
+                    {
+                        loginAccount.Password = customer.Password;
+                        _context.Update(loginAccount);
+                        await _context.SaveChangesAsync();
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserAccountExists(userAccount.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!_context.customer.Any(e => e.Id == customer.Id)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(userAccount);
+            return View(customer);
         }
 
         // GET: UsersAccount/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            string role = HttpContext.Session.GetString("Role");
+            if (role != "Admin") return RedirectToAction("Login", "UsersAccount");
 
-            var userAccount = await _context.users_account
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (userAccount == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            return View(userAccount);
+            var user = await _context.users_account.FindAsync(id);
+            if (user == null) return NotFound();
+
+            var customer = await _context.customer.FirstOrDefaultAsync(c => c.Name == user.Name);
+            if (customer == null) return NotFound();
+
+            return View(customer);
         }
 
         // POST: UsersAccount/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var userAccount = await _context.users_account.FindAsync(id);
-            if (userAccount != null)
-            {
-                _context.users_account.Remove(userAccount);
-            }
+            string role = HttpContext.Session.GetString("Role");
+            if (role != "Admin") return RedirectToAction("Login", "UsersAccount");
 
-            await _context.SaveChangesAsync();
+            var customer = await _context.customer.FindAsync(id);
+            if (customer != null)
+            {
+                _context.customer.Remove(customer);
+
+                var loginAccount = await _context.users_account.FirstOrDefaultAsync(u => u.Name == customer.Name);
+                if (loginAccount != null)
+                {
+                    _context.users_account.Remove(loginAccount);
+                }
+
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Index));
         }
 
