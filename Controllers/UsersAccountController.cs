@@ -437,6 +437,7 @@ namespace web2Project.Controllers
             var customer = await _context.customer.FirstOrDefaultAsync(c => c.Name == user.Name);
             if (customer == null) return NotFound();
 
+            ViewData["AccountId"] = id;
             return View(customer);
         }
 
@@ -448,17 +449,15 @@ namespace web2Project.Controllers
             string role = HttpContext.Session.GetString("Role");
             if (role != "Admin") return RedirectToAction("Login", "UsersAccount");
 
-            var customer = await _context.customer.FindAsync(id);
-            if (customer != null)
+            var loginAccount = await _context.users_account.FindAsync(id);
+            if (loginAccount != null)
             {
-                _context.customer.Remove(customer);
-
-                var loginAccount = await _context.users_account.FirstOrDefaultAsync(u => u.Name == customer.Name);
-                if (loginAccount != null)
+                var customer = await _context.customer.FirstOrDefaultAsync(c => c.Name == loginAccount.Name);
+                if (customer != null)
                 {
-                    _context.users_account.Remove(loginAccount);
+                    _context.customer.Remove(customer);
                 }
-
+                _context.users_account.Remove(loginAccount);
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));

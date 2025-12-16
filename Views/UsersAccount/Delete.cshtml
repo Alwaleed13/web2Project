@@ -41,7 +41,7 @@
     </dl>
 
     <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
+        <input type="hidden" name="id" value="@ViewData["AccountId"]" />  
         <div class="d-grid gap-3 mt-4">
             <input type="submit" value="Delete" class="btn btn-danger" />
             <a asp-action="Index" class="btn btn-secondary">Cancel</a>
